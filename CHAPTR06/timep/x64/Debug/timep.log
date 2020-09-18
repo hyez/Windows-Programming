@@ -1,0 +1,6 @@
+﻿  ReportError.cpp
+  SKIPARG.cpp
+  timep.cpp
+C:\Users\kie\Desktop\윈도우프로그래밍\Chapter06-SourceCode\CHAPTR06\timep\timep.cpp(113,9): warning C4129: '-': 문자 이스케이프 시퀀스를 인식할 수 없습니다.
+  코드를 생성하고 있습니다...
+  timep.vcxproj -> C:\Users\kie\Desktop\윈도우프로그래밍\Chapter06-SourceCode\CHAPTR06\timep\x64\Debug\timep.exe

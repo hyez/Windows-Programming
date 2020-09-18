@@ -1,0 +1,2 @@
+C:\Users\kie\Desktop\윈도우프로그래밍\Chapter06-SourceCode\CHAPTR06\timep\x64\Debug\timep.exe
+C:\Users\kie\Desktop\윈도우프로그래밍\Chapter06-SourceCode\CHAPTR06\timep\x64\Debug\timep.pdb
