@@ -50,8 +50,8 @@ int _tmain(int argc, LPTSTR argv[])
 		Each thread also gets a temporary file name for the results.
 		argv[1] is the search pattern. */
 
-	tHandle = (HANDLE *)malloc((argc - 2) * sizeof(HANDLE));
-	gArg = (PGR_ARGS )malloc((argc - 2) * sizeof(GREP_THREAD_ARG));
+	tHandle = (HANDLE*)malloc((argc - 2) * sizeof(HANDLE));
+	gArg = (PGR_ARGS)malloc((argc - 2) * sizeof(GREP_THREAD_ARG));
 
 	for (iThrd = 0; iThrd < argc - 2; iThrd++) {
 
@@ -69,7 +69,7 @@ int _tmain(int argc, LPTSTR argv[])
 		/* Output file. */
 
 		gArg[iThrd].argc = 4;
-		
+
 		/* Create a thread to execute the command line. */
 
 		tHandle[iThrd] = (HANDLE)_beginthreadex(
@@ -89,7 +89,7 @@ int _tmain(int argc, LPTSTR argv[])
 
 	threadCount = argc - 2;
 	while (threadCount > 0) {
-		threadIndex = WaitForMultipleObjects(threadCount, tHandle, FALSE, INFINITE);
+		threadIndex = WaitForMultipleObjects(threadCount, tHandle, FALSE, INFINITE); // 여기서 오류남 (permission denined)
 		iThrd = (int)threadIndex - (int)WAIT_OBJECT_0;
 		if (iThrd < 0 || iThrd >= threadCount)
 			ReportError(_T("Thread wait error."), 5, TRUE);
@@ -210,7 +210,7 @@ static DWORD WINAPI ThGrep(PGR_ARGS pArgs)
 
 	/* Open the output file. */
 
-	fpout = openFile(file = (char *)argv[argc - 1], (char *)"wb");
+	fpout = openFile(file = (char*)argv[argc - 1], (char*)"wb");
 	if (fpout == NULL) {
 		printf("Failure to open output file.");
 		return 1;
@@ -226,8 +226,8 @@ static DWORD WINAPI ThGrep(PGR_ARGS pArgs)
 		}
 		else {
 			if (!patternSeen++)
-				prepSearchString((char *)argv[i], pattern);
-			else if ((fp = openFile(file = (char *)argv[i], (char *)"rb"))
+				prepSearchString((char*)argv[i], pattern);
+			else if ((fp = openFile(file = (char*)argv[i], (char*)"rb"))
 				!= NULL) {
 				if (!showName && i < argc - 2) ++showName;
 				while (fgets(string, sizeof(string), fp)
