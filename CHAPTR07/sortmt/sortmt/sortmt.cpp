@@ -212,6 +212,7 @@ int _tmain(int argc, LPTSTR argv[])
 		//	4. void* arglist: lpStartAddress 가 가리키는 함수 호출 시, 전달할 인자를 지정
 		//	5. unsigned initflag:  새로운 쓰레드 생성 이후에 바로 실행 가능한 상태가 되느냐, 아니면 대기 상태로 들어가느냐를 결정 (CREATE_SUSPENDED: 일시 중단된 상태로 스레드를 만듬)
 		//	6. unsigned* thrdaddr: 쓰레드 생성 시 쓰레드id가 리턴되는데, 이를 저장 (NULL: 사용하지 않음)
+		// return: 성공시  새로 만든 스레드에 핸들을 반환, 실패시 0 반환
 		pThreadHandle[iTh] = (HANDLE)_beginthreadex(
 			NULL, 0, (_beginthreadex_proc_type)SortThread, &threadArg[iTh], CREATE_SUSPENDED, NULL);
 
@@ -226,7 +227,7 @@ int _tmain(int argc, LPTSTR argv[])
 
 	/* Wait for the sort-merge threads to complete. */
 	printf("WaitForSingleObject를 사용하여 thread를 대기합니다.\n");
-	//지정한 오브젝트가 시그널 상태가 되거나 타임아웃이 되면 제어를 돌려준다.
+	// 지정한 오브젝트가 시그널 상태가 되거나 타임아웃이 되면 제어를 돌려준다.
 	WaitForSingleObject(
 		pThreadHandle[0], // sort 후 merge된 thread
 		INFINITE // INFINITE를 지정하면 오브젝트가 시그널 상태가 될때까지 기다린다.
