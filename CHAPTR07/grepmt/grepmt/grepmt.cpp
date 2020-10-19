@@ -13,17 +13,19 @@
 		or use the build...settings...C/C++...CodeGeneration...Multithreaded library. */
 
 #include "Everything.h"
+#include <iostream>
+using namespace std;
 
 // GREP_THREAD_ARG 구조체 선언
 typedef struct {	/* grep thread's data structure. */
 	int argc;
-	TCHAR targv[4][MAX_COMMAND_LINE];
+	char targv[4][MAX_COMMAND_LINE];
 } GREP_THREAD_ARG;
 
 typedef GREP_THREAD_ARG* PGR_ARGS;
 static DWORD WINAPI ThGrep(PGR_ARGS pArgs);
 
-int _tmain(int argc, LPTSTR argv[])
+int main(int argc, char** argv)
 
 /* Create a separate THREAD to search each file on the command line.
 	Report the results as they come in.
@@ -31,7 +33,7 @@ int _tmain(int argc, LPTSTR argv[])
 	directory, to receive the results.
 	This program modifies Program 8-1, which used processes. */
 {
-	PGR_ARGS gArg;		/* Points to array of thread args. */ // 스레드 args
+	PGR_ARGS  gArg;		/* Points to array of thread args. */ // 스레드 args
 	HANDLE* tHandle;	/* Points to array of thread handles. */ // 스레드 핸들
 	TCHAR commandLine[MAX_COMMAND_LINE];
 	BOOL ok;
@@ -68,9 +70,9 @@ int _tmain(int argc, LPTSTR argv[])
 
 		// argv[1]: pattern
 		// argv[iThrd + 2]: 파일명
-		wcscpy_s(gArg[iThrd].targv[1], argv[1]); // pattern을 gArg[iThrd]에 복사
-		wcscpy_s(gArg[iThrd].targv[2], argv[iThrd + 2]); // searchfile를 gArg[iThrd]에 복사
-
+		strcpy_s(gArg[iThrd].targv[1], (const char*)argv[1]); // pattern을 gArg[iThrd]에 복사
+		strcpy_s(gArg[iThrd].targv[2], (const char*)argv[iThrd + 2]);  // searchfile를 gArg[iThrd]에 복사
+		
 
 		// GetTempFileName
 		//  -> 임시 파일을 만듬
@@ -81,8 +83,8 @@ int _tmain(int argc, LPTSTR argv[])
 		//  4. gArg[iThrd].targv[3] : temp file name을 받을 buffer에 대한 포인터
 		// return: 실패시 0,  성공시 임시파일 이름에서 사용된 unique numeric value return
 
-		if (GetTempFileName	/* Temp file name */
-		(_T("."), _T("Gre"), 0, gArg[iThrd].targv[3]) == 0)
+		if (GetTempFileNameA   // temp file 생성
+		(".", "Gre", 0, gArg[iThrd].targv[3]) == 0)
 			ReportError(_T("Temp file failure."), 3, TRUE);
 
 		/* Output file. */
@@ -104,6 +106,7 @@ int _tmain(int argc, LPTSTR argv[])
 		// return: 성공시  새로 만든 스레드에 핸들을 반환, 실패시 0 반환
 		tHandle[iThrd] = (HANDLE)_beginthreadex(
 			NULL, 0, (_beginthreadex_proc_type)ThGrep, &gArg[iThrd], 0, NULL);
+		
 		// 실패할 경우 에러 출력
 		if (tHandle[iThrd] == 0)
 			ReportError(_T("ThreadCreate failed."), 4, TRUE);
@@ -134,7 +137,7 @@ int _tmain(int argc, LPTSTR argv[])
 		// - WAIT_TIMEOUT: 커널 객체가 시그널되기 전에 주어진 시간 초과 간격이 모두 지났음
 		// - WAIT_ABANDONED_0 : 커널 객체가 뮤텍스를 사용했고, 뮤텍스를 소유한 스레드가 자발적으로 뮤텍스의 소유권을 하제하지 않고 종료
 		printf("WaitForMultipleObjects를 사용하여 multi thread를 대기합니다.\n");
-		threadIndex = WaitForMultipleObjects(threadCount, tHandle, FALSE, INFINITE); // ************여기서 오류남 (permission denined)
+		threadIndex = WaitForMultipleObjects(threadCount, tHandle, FALSE, INFINITE); 
 
 		iThrd = (int)threadIndex - (int)WAIT_OBJECT_0; // 대기 에러 검사를 위한 식, 결과값과 WAIT_OBJECT_0의 차를 구함
 		if (iThrd < 0 || iThrd >= threadCount) 
@@ -154,12 +157,11 @@ int _tmain(int argc, LPTSTR argv[])
 		if (exitCode == 0) {
 			// 파일이 1개 이상이면 파일명 출력
 			if (argc > 3) {		/* Print  file name if more than one. */
-				_tprintf(_T("%s\n"),
-					gArg[iThrd].targv[2]);
+				cout << gArg[iThrd].targv[2];
 				fflush(stdout);
 			}
 			// cat gArg[iThrd].targv[3] 실행 
-			swprintf_s(commandLine, _T("cat \"%s\""), gArg[iThrd].targv[3]);
+			_stprintf_s(commandLine, _T("cat \"%s\""), (char *)gArg[iThrd].targv[3]);
 
 			// CreateProcess
 			//  -> 프로세스를 생성하는 함수
@@ -179,6 +181,7 @@ int _tmain(int argc, LPTSTR argv[])
 			ok = CreateProcess(NULL, commandLine, NULL, NULL,
 				TRUE, 0, NULL, NULL, &startUp, &processInfo);
 
+
 			// 프로세스 생성 실패시 에러 출력
 			if (!ok) ReportError(_T("Failure executing cat."), 6, TRUE);
 
@@ -193,7 +196,7 @@ int _tmain(int argc, LPTSTR argv[])
 		
 		printf("temp file을 삭제합니다.\n");
 		// DeleteFile를 사용해서 tempfile 삭제 (성공시 nonzero,  실패시 zero)
-		if (!DeleteFile(gArg[iThrd].targv[3]))
+		if (!DeleteFileA(gArg[iThrd].targv[3]))
 			ReportError(_T("Cannot delete temp file."), 7, TRUE);
 
 		/* Move the handle of the last thread in the list
@@ -203,9 +206,11 @@ int _tmain(int argc, LPTSTR argv[])
 
 		// 마지막 스레드의 핸들을 방금 완료한 스레드가 있는 슬롯으로 이동
 		tHandle[iThrd] = tHandle[threadCount - 1];
-		wcscpy_s(gArg[iThrd].targv[3], gArg[threadCount - 1].targv[3]); // gArg[threadCount - 1].targv[3]를 gArg[iThrd].targv[3]에 복사 (while문을 돌아갈 스레드) 
-		wcscpy_s(gArg[iThrd].targv[2], gArg[threadCount - 1].targv[2]); // gArg[threadCount - 1].targv[2]를 gArg[iThrd].targv[2]에 복사 (while문을 돌아갈 스레드)
+		strcpy_s(gArg[iThrd].targv[3], gArg[threadCount - 1].targv[3]); // gArg[threadCount - 1].targv[3]를 gArg[iThrd].targv[3]에 복사 (while문을 돌아갈 스레드) 
+		strcpy_s(gArg[iThrd].targv[2], gArg[threadCount - 1].targv[2]); // gArg[threadCount - 1].targv[2]를 gArg[iThrd].targv[2]에 복사 (while문을 돌아갈 스레드)
 		threadCount--; // 스레드 count 감소
+
+		cout << endl;
 	}
 
 	printf("메모리를 해제합니다.\n");
@@ -275,13 +280,13 @@ static DWORD WINAPI ThGrep(PGR_ARGS pArgs)
 	int i, patternSeen = FALSE, showName = FALSE, argc, result = 1;
 	char pattern[256];
 	char string[2048];
-	TCHAR argv[4][MAX_COMMAND_LINE];
+	char argv[4][MAX_COMMAND_LINE];
 	FILE* fp, * fpout;
 
 	argc = pArgs->argc;
-	wcscpy_s(argv[1], pArgs->targv[1]);
-	wcscpy_s(argv[2], pArgs->targv[2]);
-	wcscpy_s(argv[3], pArgs->targv[3]);
+	strcpy_s(argv[1], pArgs->targv[1]);
+	strcpy_s(argv[2], pArgs->targv[2]);
+	strcpy_s(argv[3], pArgs->targv[3]);
 	if (argc < 3) {
 		puts("Usage: grep output_file pattern file(s)");
 		return 1;
