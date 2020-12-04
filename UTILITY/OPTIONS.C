@@ -1,10 +1,9 @@
 /* Utility function to extract option flags from the command line.  */
-//#include "pch.h"
-//#include <iostream>
+
 #include "Everything.h"
 #include <stdarg.h>
 
-DWORD Options (int argc, char *argv [], const char *OptStr, ...)
+DWORD Options (int argc, LPCTSTR argv [], LPCTSTR OptStr, ...)
 
 /* argv is the command line.
 	The options, if any, start with a '-' in argv[1], argv[2], ...
@@ -23,16 +22,17 @@ DWORD Options (int argc, char *argv [], const char *OptStr, ...)
 	va_start (pFlagList, OptStr);
 
 	while ((pFlag = va_arg (pFlagList, LPBOOL)) != NULL
-				&& iFlag < (int)strlen (OptStr)) {
+				&& iFlag < (int)_tcslen (OptStr)) {
 		*pFlag = FALSE;
-		for (iArg = 1; !(*pFlag) && iArg < argc && argv [iArg] [0] == '-'; iArg++)
-			*pFlag = memchr (argv [iArg], OptStr [iFlag], strlen (argv [iArg])) != NULL;
+		for (iArg = 1; !(*pFlag) && iArg < argc && argv [iArg] [0] == _T('-'); iArg++)
+			*pFlag = _memtchr (argv [iArg], OptStr [iFlag],
+					_tcslen (argv [iArg])) != NULL;
 		iFlag++;
 	}
 
 	va_end (pFlagList);
 
-	for (iArg = 1; iArg < argc && argv [iArg] [0] == '-'; iArg++);
+	for (iArg = 1; iArg < argc && argv [iArg] [0] == _T('-'); iArg++);
 
 	return iArg;
 }

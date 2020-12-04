@@ -3,16 +3,15 @@
 
 #include "Everything.h"
 
-const char *
-SkipArg (const char *targv)
+LPTSTR SkipArg (LPCTSTR targv)
 {
-	const char *p;
+	LPTSTR p;
 
-	p = targv;
+	p = (LPTSTR)targv;
 		/* Skip up to the next tab or space. */
-	while (*p != '\0' && *p != ' ' && *p != '\t') p++;
+	while (*p != _T('\0') && *p != _T(' ') && *p != _T('\t')) p++;
 		/* Skip over tabs and spaces to the next arg. */
-	while (*p != '\0' && (*p == ' ' || *p == '\t')) p++;
+	while (*p != _T('\0') && (*p == _T(' ') || *p == _T('\t'))) p++;
 	return p;
 }
 

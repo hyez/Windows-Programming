@@ -1,0 +1,2 @@
+C:\Users\kie\OneDrive\바탕 화면\윈도우프로그래밍\CHAPTR11\serverNP\x64\Debug\serverNP.exe
+C:\Users\kie\OneDrive\바탕 화면\윈도우프로그래밍\CHAPTR11\serverNP\x64\Debug\serverNP.pdb

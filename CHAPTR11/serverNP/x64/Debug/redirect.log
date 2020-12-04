@@ -1,0 +1,13 @@
+﻿  printmsg.cpp
+C:\Users\kie\OneDrive\바탕 화면\윈도우프로그래밍\UTILITY\printmsg.cpp(18,1): warning C4273: 'PrintStrings': dll 연결이 일치하지 않습니다.
+C:\Users\kie\OneDrive\바탕 화면\윈도우프로그래밍\include\support.h(61,14): message : 'PrintStrings'의 이전 정의를 참조하십시오.
+C:\Users\kie\OneDrive\바탕 화면\윈도우프로그래밍\UTILITY\printmsg.cpp(43,1): warning C4273: 'PrintMsg': dll 연결이 일치하지 않습니다.
+C:\Users\kie\OneDrive\바탕 화면\윈도우프로그래밍\include\support.h(62,14): message : 'PrintMsg'의 이전 정의를 참조하십시오.
+C:\Users\kie\OneDrive\바탕 화면\윈도우프로그래밍\UTILITY\printmsg.cpp(57,1): warning C4273: 'ConsolePrompt': dll 연결이 일치하지 않습니다.
+C:\Users\kie\OneDrive\바탕 화면\윈도우프로그래밍\include\support.h(60,14): message : 'ConsolePrompt'의 이전 정의를 참조하십시오.
+  ReportError.cpp
+  serverNP.cpp
+  코드를 생성하고 있습니다...
+     C:\Users\kie\OneDrive\바탕 화면\윈도우프로그래밍\CHAPTR11\serverNP\x64\Debug\serverNP.lib 라이브러리 및 C:\Users\kie\OneDrive\바탕 화면\윈도우프로그래밍\CHAPTR11\serverNP\x64\Debug\serverNP.exp 개체를 생성하고 있습니다.
+LINK : warning LNK4217: 'PrintMsg'에 정의된 'printmsg.obj' 기호를 함수 'serverNP.obj'에서 '"unsigned long __cdecl Server(struct THREAD_ARG *)" (?Server@@YAKPEAUTHREAD_ARG@@@Z)'이(가) 가져왔습니다.
+  redirect.vcxproj -> C:\Users\kie\OneDrive\바탕 화면\윈도우프로그래밍\CHAPTR11\serverNP\x64\Debug\serverNP.exe

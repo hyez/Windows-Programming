@@ -65,7 +65,7 @@ LIBSPEC BOOL PrintMsg (HANDLE, LPCTSTR);
 extern VOID ReportError(LPCTSTR, DWORD, BOOL);
 extern VOID ReportException(LPCTSTR, DWORD);
 extern DWORD Options (int, LPCTSTR *, LPCTSTR, ...);
-extern LPTSTR SkipArg (LPCTSTR);
+extern const char* SkipArg (const char*);
 LIBSPEC BOOL WindowsVersionOK (DWORD, DWORD);
 LIBSPEC VOID GetArgs (LPCTSTR, int *, LPTSTR *);
 

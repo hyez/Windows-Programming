@@ -1,7 +1,6 @@
-
 #include "Everything.h"
 
-VOID ReportError (const char *userMessage, DWORD exitCode, BOOL printErrorMessage)
+VOID ReportError (LPCTSTR userMessage, DWORD exitCode, BOOL printErrorMessage)
 
 /* General-purpose function for reporting system errors.
 	Obtain the error number and convert it to the system error message.
@@ -13,7 +12,7 @@ VOID ReportError (const char *userMessage, DWORD exitCode, BOOL printErrorMessag
 {
 	DWORD eMsgLen, errNum = GetLastError ();
 	LPTSTR lpvSysMsg;
-	fprintf(stderr, "%s\n", userMessage);
+	_ftprintf (stderr, _T("%s\n"), userMessage);
 	if (printErrorMessage) {
 		eMsgLen = FormatMessage (FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
 				NULL, errNum, MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT),
@@ -24,7 +23,7 @@ VOID ReportError (const char *userMessage, DWORD exitCode, BOOL printErrorMessag
 		}
 		else
 		{
-			fprintf (stderr, "Last Error Number; %d.\n", errNum);
+			_ftprintf (stderr, _T("Last Error Number; %d.\n"), errNum);
 		}
 
 		if (lpvSysMsg != NULL) LocalFree (lpvSysMsg); /* Explained in Chapter 5. */
@@ -45,7 +44,7 @@ VOID ReportException (LPCTSTR userMessage, DWORD exceptionCode)
 	Print the system error message only if the message is non-null. */
 {	
 	if (lstrlen (userMessage) > 0)
-		ReportError ((const char *)userMessage, 0, TRUE);
+		ReportError (userMessage, 0, TRUE);
 			/* If fatal, raise an exception. */
 
 	if (exceptionCode != 0) 
